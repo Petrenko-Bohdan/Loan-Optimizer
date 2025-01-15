@@ -1,1 +1,67 @@
-<p>loan-dashboard works!</p>
+<div class="grid-table mat-elevation-z4">
+  <!-- Row 1 -->
+  <div class="cell label">Typ raty:</div>
+  <div class="cell input">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-select [(value)]="rateType">
+        <mat-option value="równa">Równa</mat-option>
+        <mat-option value="malejąca">Malejąca</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+  <div class="cell label">Suma rat:</div>
+  <div class="cell output green">
+    {{ totalPayments | number : "1.2-2" }} zł
+  </div>
+
+  <!-- Row 2 -->
+  <div class="cell label">Kwota:</div>
+  <div class="cell input">
+    <mat-form-field appearance="outline" class="full-width">
+      <input matInput type="number"  />
+    </mat-form-field>
+  </div>
+  <div class="cell label">Suma nadplat:</div>
+  <div class="cell output green">
+    {{ totalOverpayment | number : "1.2-2" }} zł
+  </div>
+
+  <!-- Row 3 -->
+  <div class="cell label">Okres (m-ce):</div>
+  <div class="cell input">
+    <mat-form-field appearance="outline" class="full-width">
+      <input matInput type="number" />
+    </mat-form-field>
+  </div>
+  <div class="cell label">Koszt:</div>
+  <div class="cell output red">
+    {{ totalCost | number : "1.2-2" }} zł
+  </div>
+
+  <!-- Row 4 -->
+  <div class="cell label">Opr. roczne:</div>
+  <div class="cell input">
+    <mat-form-field appearance="outline" class="full-width">
+      <input matInput type="number" />
+    </mat-form-field>
+  </div>
+  <div class="cell label">Czas spłaty:</div>
+  <div class="cell output">
+    {{ repaymentTime }} miesięcy
+  </div>
+
+  <!-- Row 5 -->
+  <div class="cell label">Po nadplacie:</div>
+  <div class="cell input">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-select [(value)]="postOverpayment">
+        <mat-option value="lower installment">Niższa rata</mat-option>
+        <mat-option value="shorter period">Krótszy okres</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+  <div class="cell label">Zysk:</div>
+  <div class="cell output">
+    {{ profit | number : "1.2-2" }} zł
+  </div>
+</div>
