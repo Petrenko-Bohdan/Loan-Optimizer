@@ -1,0 +1,47 @@
+.grid-table {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr; 
+  gap: 8px;
+  width: 40%;
+  padding: 16px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: white;
+}
+
+.cell {
+  display: flex;
+  align-items: center;
+  padding: 8px;
+  height: 56px;
+}
+
+.label {
+  font-weight: bold;
+  text-align: right;
+  padding-right: 8px;
+}
+
+.input {
+  width: 100%;
+}
+
+.output {
+  font-weight: bold;
+  text-align: right;
+  padding-right: 8px;
+}
+
+.green {
+  background-color: #c8e6c9;
+  color: #256029;
+}
+
+.red {
+  background-color: #ffcdd2;
+  color: #b71c1c;
+}
+
+.full-width {
+  width: 100%;
+}
