@@ -1,0 +1,43 @@
+<div class="container">
+  
+  <form (ngSubmit)="onSubmit()" class="loan-form">
+    <div class="form-group">
+      <label for="amount">Loan Amount:</label>
+      <input type="number" id="amount" [(ngModel)]="loan.amount" name="amount" required class="form-control">
+    </div>
+
+    <div class="form-group">
+      <label for="interestRate">Interest Rate (%):</label>
+      <input type="number" id="interestRate" [(ngModel)]="loan.interestRate" name="interestRate" required class="form-control">
+    </div>
+
+    <div class="form-group">
+      <label for="term">Term (months):</label>
+      <input type="number" id="term" [(ngModel)]="loan.term" name="term" required class="form-control">
+    </div>
+
+    <button type="submit" class="btn btn-primary">Add Loan</button>
+  </form>
+
+
+  <table class="table table-bordered" *ngIf="paymentSchedule$ | async as paymentSchedule">
+    <thead>
+      <tr>
+        <th>Month</th>
+        <th>Monthly Payment</th>
+        <th>Principal</th>
+        <th>interest</th>
+        <th>Balance</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let payment of paymentSchedule">
+        <td>{{ payment.month}}</td>
+        <td>{{ payment.monthlyPayment}}</td>
+        <td>{{ payment.principal}}</td>
+        <td>{{ payment.interest}}</td>
+        <td>{{ payment.remainingBalance}}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
