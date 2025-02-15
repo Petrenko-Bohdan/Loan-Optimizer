@@ -1,0 +1,37 @@
+<form [formGroup]="loanForm" (ngSubmit)="onSubmit()" class="loan-form"> 
+  <mat-form-field appearance="outline">
+    <mat-label>Typ raty</mat-label>
+    <mat-select formControlName="instalmentType">
+			@for (type of instalmentTypes; track type) {
+				<mat-option [value]="type.value">{{type.viewValue}}</mat-option>
+			}
+    </mat-select>
+  </mat-form-field>	
+
+	<mat-form-field appearance="outline">
+		<mat-label>Kwota</mat-label>
+		<input matInput formControlName="loanAmount" type="number">
+	</mat-form-field>
+
+	<mat-form-field appearance="outline">
+		<mat-label>Okres</mat-label>
+		<input matInput formControlName="loanTerm" type="number">
+	</mat-form-field>
+
+	<mat-form-field appearance="outline">
+		<mat-label>Oprocentowanie</mat-label>
+		<input matInput formControlName="interestRate" type="number">
+	</mat-form-field>
+
+	<mat-form-field appearance="outline">
+    <mat-label>Po nadplacie</mat-label>
+    <mat-select formControlName="afterOverpayment">
+			@for (type of afterOverpayment; track type) {
+				<mat-option [value]="type.value">{{type.viewValue}}</mat-option>
+			}
+    </mat-select>
+  </mat-form-field>	
+
+	<button mat-raised-button color="primary" type="submit">Oblicz</button>
+
+</form>
