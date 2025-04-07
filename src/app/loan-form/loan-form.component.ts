@@ -8,6 +8,12 @@ import { MatOptionModule } from '@angular/material/core';
 import { instalmentTypes } from '../models/loan.model';
 import { FormsModule } from '@angular/forms';
 import { afterOverpayment } from '../models/loan.model';
+import { loanForm } from '../models/loan.model';
+import { select, Store } from '@ngrx/store';
+import { calculateLoanValid } from '../store/loan.actions';
+import { AppStateValid } from '../store/app.state';
+import { Observable } from 'rxjs';
+import { selectPaymentScheduleValid } from '../store/loan.selectors';
 
 @Component({
   selector: 'app-loan-form',
@@ -30,27 +36,32 @@ export class LoanFormComponent {
     { value: 'Declining', viewValue: 'Malejąca' },
   ];
 
-	afterOverpayment: afterOverpayment[] = [
-		{ value: 'lowerInstallment', viewValue: 'Nizsza rata' },
-		{ value: 'shorterPeriod', viewValue: 'Krótszy okres' },
-	];
+  afterOverpayment: afterOverpayment[] = [
+    { value: 'lowerInstallment', viewValue: 'Nizsza rata' },
+    { value: 'shorterPeriod', viewValue: 'Krótszy okres' },
+  ];
 
-  constructor(private fb: FormBuilder) {
+  paymentScheduleValid$: Observable<any>;
+
+  constructor(private fb: FormBuilder, private store: Store<AppStateValid>) {
     this.loanForm = this.fb.group({
       instalmentType: ['Equal', Validators.required],
-      loanAmount: [null, Validators.required, Validators.min(1)],
-      loanTerm: [null, Validators.required, Validators.min(1)],
-      interestRate: [
-        null,
-        Validators.required,
-        Validators.min(0),
-        Validators.max(100),
-      ],
+      loanAmount: [null, [Validators.required, Validators.min(1)]],
+      loanTerm: [null, [Validators.required, Validators.min(1)]],
+      interestRate: [null, Validators.required],
       afterOverpayment: ['shorterPeriod', Validators.required],
     });
+
+    this.paymentScheduleValid$ = this.store.select(selectPaymentScheduleValid);
   }
 
   onSubmit() {
-    console.log(this.loanForm.value);
+    if (this.loanForm.valid) {
+      const loan: loanForm = this.loanForm.value;
+      this.store.dispatch(calculateLoanValid({ loan }));
+      console.log(this.loanForm.value);
+    } else {
+      console.log('Form is invalid');
+    }
   }
 }
