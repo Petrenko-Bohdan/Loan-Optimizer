@@ -13,7 +13,7 @@ export interface loanForm {
 	loanAmount: number;
 	loanTerm: number;
 	interestRate: number;
-	afterOverpayment: number;
+	afterOverpayment: string;
 }
 
 export interface Loan {
