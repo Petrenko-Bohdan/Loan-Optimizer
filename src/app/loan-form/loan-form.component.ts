@@ -10,10 +10,10 @@ import { FormsModule } from '@angular/forms';
 import { afterOverpayment } from '../models/loan.model';
 import { loanForm } from '../models/loan.model';
 import { select, Store } from '@ngrx/store';
-import { calculateLoanValid } from '../store/loan.actions';
-import { AppStateValid } from '../store/app.state';
 import { Observable } from 'rxjs';
-import { selectPaymentScheduleValid } from '../store/loan.selectors';
+import { calculateLoan } from '../store/calculate-loan/calculate-loan.actions';
+
+
 
 @Component({
   selector: 'app-loan-form',
@@ -41,9 +41,7 @@ export class LoanFormComponent {
     { value: 'shorterPeriod', viewValue: 'Krótszy okres' },
   ];
 
-  paymentScheduleValid$: Observable<any>;
-
-  constructor(private fb: FormBuilder, private store: Store<AppStateValid>) {
+  constructor(private fb: FormBuilder, private store: Store) {
     this.loanForm = this.fb.group({
       instalmentType: ['Equal', Validators.required],
       loanAmount: [null, [Validators.required, Validators.min(1)]],
@@ -51,17 +49,14 @@ export class LoanFormComponent {
       interestRate: [null, Validators.required],
       afterOverpayment: ['shorterPeriod', Validators.required],
     });
-
-    this.paymentScheduleValid$ = this.store.select(selectPaymentScheduleValid);
   }
 
   onSubmit() {
-    if (this.loanForm.valid) {
-      const loan: loanForm = this.loanForm.value;
-      this.store.dispatch(calculateLoanValid({ loan }));
-      console.log(this.loanForm.value);
-    } else {
-      console.log('Form is invalid');
-    }
+		if (this.loanForm.valid) {
+			const loanData: loanForm = this.loanForm.value;
+			this.store.dispatch(calculateLoan({ loanData }));
+		} else {
+			console.log('Form is invalid');
+		}
   }
 }
