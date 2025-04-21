@@ -12,6 +12,10 @@ import { loanForm } from '../models/loan.model';
 import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { calculateLoan } from '../store/calculate-loan/calculate-loan.actions';
+import { PaymentScheduleTableComponent } from "../payment-schedule-table/payment-schedule-table.component";
+import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
+import { RouterModule } from '@angular/router';
 
 
 
@@ -25,12 +29,16 @@ import { calculateLoan } from '../store/calculate-loan/calculate-loan.actions';
     MatSelectModule,
     MatOptionModule,
     FormsModule,
-  ],
+    PaymentScheduleTableComponent,
+		CommonModule,
+		RouterModule,
+],
   templateUrl: './loan-form.component.html',
   styleUrl: './loan-form.component.scss',
 })
 export class LoanFormComponent {
   loanForm: FormGroup;
+	showResults: boolean = false;
   instalmentTypes: instalmentTypes[] = [
     { value: 'Equal', viewValue: 'Równa' },
     { value: 'Declining', viewValue: 'Malejąca' },
@@ -41,7 +49,7 @@ export class LoanFormComponent {
     { value: 'shorterPeriod', viewValue: 'Krótszy okres' },
   ];
 
-  constructor(private fb: FormBuilder, private store: Store) {
+  constructor(private fb: FormBuilder, private store: Store, private router: Router) {
     this.loanForm = this.fb.group({
       instalmentType: ['Equal', Validators.required],
       loanAmount: [null, [Validators.required, Validators.min(1)]],
@@ -55,6 +63,9 @@ export class LoanFormComponent {
 		if (this.loanForm.valid) {
 			const loanData: loanForm = this.loanForm.value;
 			this.store.dispatch(calculateLoan({ loanData }));
+			this.router.navigate(['results'], { relativeTo: this.router.routerState.root.firstChild });
+
+
 		} else {
 			console.log('Form is invalid');
 		}
