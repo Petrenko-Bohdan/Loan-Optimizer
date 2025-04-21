@@ -9,8 +9,8 @@ import { provideEffects } from '@ngrx/effects';
 import { provideStoreDevtools } from '@ngrx/store-devtools';
 
 import { provideStore } from '@ngrx/store';
-import { loanReducer } from './store/loan.reducer';
-import { LoanEffects } from './store/loan.effects';
+import { loanReducer } from './store/calculate-loan/calculate-loan.reducer';
+import { LoanEffects } from './store/calculate-loan/calculate-loan.effects;
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 
 export const appConfig: ApplicationConfig = {
