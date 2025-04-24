@@ -34,23 +34,21 @@ function calculatePaymentSchedule(loanData: loanForm): any[] {
 	let remainingBalance = loanAmount;
 
 	for (let i=1; i<=loanTerm; i++) {
-		const interestRate = remainingBalance * monthlyInterestRate;
-		const principal = monthlyPayment - interestRate;
-		remainingBalance -= principal;	
+		const interest = remainingBalance * monthlyInterestRate;
+		const principal = monthlyPayment - interest;
 		
 		paymentSchedule.push({
 			month: i,
-			interestRate: interestRate,
-			principal: principal,
-			remainingBalance: remainingBalance,
-			totalPayment: monthlyPayment});
-	}
+			capital: remainingBalance.toFixed(2),
+			interest: interest.toFixed(2),
+			installment: principal.toFixed(2),
+			total: monthlyPayment.toFixed(2),
+		});
 
+		remainingBalance -= principal;	
+	}
 
 	return paymentSchedule;
 
-	
-	
-	
 }
 
