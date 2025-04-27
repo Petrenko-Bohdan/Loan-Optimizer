@@ -7,21 +7,35 @@ import { selectLoanResult } from '../store/calculate-loan/calculate-loan.selecto
 import { Store } from '@ngrx/store';
 import { CommonModule } from '@angular/common';
 import { MatCommonModule } from '@angular/material/core';
-
+import { updateOverpayment } from '../store/calculate-loan/calculate-loan.actions';
 
 @Component({
   selector: 'app-payment-schedule-table',
   standalone: true,
   imports: [MatCardModule, MatTableModule, CommonModule, MatCommonModule],
   templateUrl: './payment-schedule-table.component.html',
-  styleUrl: './payment-schedule-table.component.scss'
+  styleUrl: './payment-schedule-table.component.scss',
 })
 export class PaymentScheduleTableComponent {
-	displayedColumns: string[] = ['month','capital', 'interest', 'installment', 'total'];
+  displayedColumns: string[] = [
+    'month',
+    'capital',
+    'interest',
+    'installment',
+    'total',
+    'overpayment',
+  ];
 
-	paymentSchedule$: Observable<any[]>;
+  paymentSchedule$: Observable<any[]>;
 
-	constructor(private store: Store<AppState>){
-		this.paymentSchedule$=this.store.select(selectLoanResult)
-	}
+  constructor(private store: Store<AppState>) {
+    this.paymentSchedule$ = this.store.select(selectLoanResult);
+  }
+
+  onOverpaymentChange(event: Event, index: number): void {
+    const input = event.target as HTMLInputElement;
+    const value = parseFloat(input.value);
+
+    this.store.dispatch(updateOverpayment({ index, overpayment: value }));
+  }
 }
