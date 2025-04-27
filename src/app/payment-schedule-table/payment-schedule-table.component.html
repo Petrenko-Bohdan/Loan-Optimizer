@@ -47,7 +47,7 @@
 						Nadpłata
 					</th>
 					<td mat-cell *matCellDef="let element; let i=index">
-						<input matInput type="number" (input)="onOverpaymentInput($event, i)">
+						<input matInput type="number" [value]="element.overpayment|| '' " (input)="onOverpaymentChange($event, i)">
 					</td>					
 				</ng-container>
 				<tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
