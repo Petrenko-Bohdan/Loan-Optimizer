@@ -1,3 +1,4 @@
+<div [ngClass]="{'loan-form-centered': !calculated, 'loan-form-top': calculated}">
 <form [formGroup]="loanForm" (ngSubmit)="onSubmit()" class="loan-form"> 
   <mat-form-field appearance="outline">
     <mat-label>Typ raty</mat-label>
@@ -35,5 +36,5 @@
 	<button mat-raised-button color="primary" type="submit">Oblicz</button>
 
 </form>
-
+</div>
 <router-outlet></router-outlet>
