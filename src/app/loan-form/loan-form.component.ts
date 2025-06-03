@@ -59,11 +59,14 @@ export class LoanFormComponent {
     });
   }
 
+	calculated = false;
+
   onSubmit() {
 		if (this.loanForm.valid) {
 			const loanData: loanForm = this.loanForm.value;
 			this.store.dispatch(calculateLoan({ loanData }));
 			this.router.navigate(['results'], { relativeTo: this.router.routerState.root.firstChild });
+			this.calculated = true;
 
 
 		} else {
