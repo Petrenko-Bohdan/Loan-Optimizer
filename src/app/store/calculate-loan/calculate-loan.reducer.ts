@@ -99,40 +99,46 @@ function recalculatedPaymentSchedule(
 ): any[] {
   const monthlyInterestRate = getMonthlyInterestRate(loanData.interestRate);
   let remainingBalance = loanData.loanAmount;
+  const monthlyPayment = getMonthlyPayment(
+    loanData.loanTerm,
+    loanData.interestRate,
+    loanData.loanAmount
+  );
+  const startDate = new Date();
+  const updatedSchedule = [];
 
   for (let i = 0; i < paymentSchedule.length; i++) {
     const overpayment = Number(paymentSchedule[i].overpayment) || 0;
 
     const interest = remainingBalance * monthlyInterestRate;
-    const principal =
-      getMonthlyPayment(
-        loanData.loanTerm,
-        loanData.interestRate,
-        loanData.loanAmount
-      ) + overpayment;
-    const total = principal + interest;
-    remainingBalance -= principal + overpayment;
-    const startDate = new Date();
+    const principal = monthlyPayment - interest;
+    const totalPayment = monthlyPayment + overpayment;
+    const startingCapital = remainingBalance;
 
-    if (remainingBalance < 0) {
-      remainingBalance = 0;
+    let totalPrincipal = principal + overpayment;
+
+    if (totalPrincipal > remainingBalance) {
+      totalPrincipal = remainingBalance - interest;
     }
 
-    paymentSchedule[i] = {
+    remainingBalance -= totalPrincipal;
+
+    const actualPrincipal = totalPrincipal - overpayment;
+
+    updatedSchedule.push({
       ...paymentSchedule[i],
       month: getPaymentDate(startDate, i + 1),
-      capital: remainingBalance.toFixed(2),
+      capital: startingCapital.toFixed(2),
       interest: interest.toFixed(2),
-      installment: principal.toFixed(2),
-      total: total.toFixed(2),
+      installment: actualPrincipal.toFixed(2),
+      total: (actualPrincipal + interest + overpayment).toFixed(2),
       overpayment: overpayment ? overpayment : undefined,
-    };
+    });
 
     if (remainingBalance === 0) {
       paymentSchedule.length = i + 1;
       break;
     }
   }
-
-  return paymentSchedule;
+  return updatedSchedule;
 }
