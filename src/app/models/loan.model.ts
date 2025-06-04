@@ -3,13 +3,15 @@ export interface instalmentTypes {
   viewValue: string;
 }
 
+export type instalmentType = 'Equal' | 'Declining';
+
 export interface afterOverpayment {
   value: string;
   viewValue: string;
 }
 
 export interface loanForm {
-  instalmentType: string;
+  instalmentType: instalmentType;
   loanAmount: number;
   loanTerm: number;
   interestRate: number;
