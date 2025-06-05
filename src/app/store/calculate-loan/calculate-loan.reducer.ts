@@ -68,10 +68,23 @@ function calculatePaymentSchedule(loanData: loanForm): any[] {
     interestRate,
     afterOverpayment,
   } = loanData;
+
+  if (instalmentType === 'Declining') {
+    return calculateDecliningSchedule(loanAmount, loanTerm, interestRate);
+  }
+
+  return calculateEqualSchedule(loanAmount, loanTerm, interestRate);
+}
+
+function calculateEqualSchedule(
+  loanAmount: number,
+  loanTerm: number,
+  interestRate: number
+): any[] {
+  const paymentSchedule = [];
+
   const monthlyInterestRate = getMonthlyInterestRate(interestRate);
   const monthlyPayment = getMonthlyPayment(loanTerm, interestRate, loanAmount);
-
-  const paymentSchedule = [];
   let remainingBalance = loanAmount;
   const startDate = new Date();
 
@@ -86,10 +99,36 @@ function calculatePaymentSchedule(loanData: loanForm): any[] {
       installment: principal.toFixed(2),
       total: monthlyPayment.toFixed(2),
     });
-
     remainingBalance -= principal;
   }
+  return paymentSchedule;
+}
 
+function calculateDecliningSchedule(
+  loanAmount: number,
+  loanTerm: number,
+  interestRate: number
+): any[] {
+  const paymentSchedule = [];
+
+  const monthlyInterestRate = getMonthlyInterestRate(interestRate);
+  const monthlyPrincipal = loanAmount / loanTerm;
+  let remainingBalance = loanAmount;
+  const startDate = new Date();
+
+  for (let i = 1; i <= loanTerm; i++) {
+    const interest = remainingBalance * monthlyInterestRate;
+    const totalPayment = monthlyPrincipal + interest;
+
+    paymentSchedule.push({
+      month: getPaymentDate(startDate, i),
+      capital: remainingBalance.toFixed(2),
+      interest: interest.toFixed(2),
+      installment: monthlyPrincipal.toFixed(2),
+      total: totalPayment.toFixed(2),
+    });
+    remainingBalance -= monthlyPrincipal;
+  }
   return paymentSchedule;
 }
 
