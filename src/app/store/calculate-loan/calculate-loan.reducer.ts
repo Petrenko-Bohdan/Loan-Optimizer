@@ -157,7 +157,7 @@ function recalculatedPaymentSchedule(
     let totalPrincipal = principal + overpayment;
 
     if (totalPrincipal > remainingBalance) {
-      totalPrincipal = remainingBalance - interest;
+      totalPrincipal = remainingBalance;
     }
 
     remainingBalance -= totalPrincipal;
