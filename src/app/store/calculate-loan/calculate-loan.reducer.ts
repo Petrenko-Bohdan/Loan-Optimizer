@@ -29,9 +29,10 @@ export const loanReducer = createReducer(
       }
       return payment;
     });
-    const recalculatedSchedule = recalculatedPaymentSchedule(
-      updatedSchedule,
-      state.result!
+
+    const recalculatedSchedule = recalculatedPaymentScheduleAfterOverpayment(
+      state.result!,
+      updatedSchedule
     );
 
     return { ...state, paymentSchedule: recalculatedSchedule };
@@ -130,6 +131,186 @@ function calculateDecliningSchedule(
     remainingBalance -= monthlyPrincipal;
   }
   return paymentSchedule;
+}
+
+const calculators = {
+  Equal: {
+    lowerInstallment: recalculateEqual_LowerInstallment,
+    shorterPeriod: recalculateEqual_ShorterPeriod,
+  },
+  Declining: {
+    lowerInstallment: recalculateDeclining_LowerInstallment,
+    shorterPeriod: recalculateDeclining_ShorterPeriod,
+  },
+};
+
+function recalculatedPaymentScheduleAfterOverpayment(
+  loanData: loanForm,
+  paymentSchedule: any[]
+): any[] {
+  const fn = calculators[loanData.instalmentType][loanData.afterOverpayment];
+
+  return fn(paymentSchedule, loanData);
+}
+
+export function recalculateEqual_LowerInstallment(
+  paymentSchedule: any[],
+  loanData: loanForm
+): any[] {
+  const monthlyInterestRate = getMonthlyInterestRate(loanData.interestRate);
+  let remainingBalance = loanData.loanAmount;
+  const startDate = new Date();
+
+  const updatedSchedule = [];
+
+  for (let i = 0; remainingBalance > 0 && i < loanData.loanTerm; i++) {
+    const remainingTerm = loanData.loanTerm - i;
+    const overpayment = Number(paymentSchedule[i].overpayment) || 0;
+    const monthlyPayment = getMonthlyPayment(
+      remainingTerm,
+      loanData.interestRate,
+      remainingBalance
+    );
+    const totalPayment = monthlyPayment + overpayment;
+    const startingCapital = remainingBalance;
+    const interest = remainingBalance * monthlyInterestRate;
+    let principal = totalPayment - interest;
+
+    if (principal > remainingBalance) {
+      principal = remainingBalance;
+    }
+
+    remainingBalance -= principal;
+
+    updatedSchedule.push({
+      month: getPaymentDate(startDate, i + 1),
+      capital: startingCapital.toFixed(2),
+      interest: interest.toFixed(2),
+      installment: (principal - overpayment).toFixed(2),
+      total: (interest + principal).toFixed(2),
+      overpayment: overpayment ? overpayment : undefined,
+    });
+  }
+
+  return updatedSchedule;
+}
+
+function recalculateEqual_ShorterPeriod(
+  paymentSchedule: any[],
+  loanData: loanForm
+): any[] {
+  const monthlyInterestRate = getMonthlyInterestRate(loanData.interestRate);
+  let remainingBalance = loanData.loanAmount;
+  const monthlyPayment = getMonthlyPayment(
+    loanData.loanTerm,
+    loanData.interestRate,
+    loanData.loanAmount
+  );
+  const startDate = new Date();
+  const updatedSchedule = [];
+  for (let i = 0; i < paymentSchedule.length; i++) {
+    const overpayment = Number(paymentSchedule[i].overpayment) || 0;
+    const interest = remainingBalance * monthlyInterestRate;
+    const principal = monthlyPayment - interest;
+    const startingCapital = remainingBalance;
+
+    let totalPrincipal = principal + overpayment;
+
+    if (totalPrincipal > remainingBalance) {
+      totalPrincipal = remainingBalance;
+    }
+
+    remainingBalance -= totalPrincipal;
+    const actualPrincipal = totalPrincipal - overpayment;
+    updatedSchedule.push({
+      ...paymentSchedule[i],
+      month: getPaymentDate(startDate, i + 1),
+      capital: startingCapital.toFixed(2),
+      interest: interest.toFixed(2),
+      installment: actualPrincipal.toFixed(2),
+      total: (actualPrincipal + interest + overpayment).toFixed(2),
+      overpayment: overpayment ? overpayment : undefined,
+    });
+
+    if (remainingBalance === 0) {
+      paymentSchedule.length = i + 1;
+      break;
+    }
+  }
+  return updatedSchedule;
+}
+
+function recalculateDeclining_LowerInstallment(
+  paymentSchedule: any[],
+  loanData: loanForm
+) {
+  const monthlyInterestRate = getMonthlyInterestRate(loanData.interestRate);
+  const monthlyPrincipal = loanData.loanAmount / loanData.loanTerm;
+  let remainingBalance = loanData.loanAmount;
+  const startDate = new Date();
+
+  const updatedSchedule = [];
+
+  for (let i = 0; remainingBalance > 0 && i < loanData.loanTerm; i++) {
+    const overpayment = Number(paymentSchedule[i].overpayment) || 0;
+    const startingCapital = remainingBalance;
+    const interest = startingCapital * monthlyInterestRate;
+    let principal = monthlyPrincipal + overpayment;
+    if (principal > remainingBalance) {
+      principal = remainingBalance;
+    }
+    remainingBalance -= principal;
+
+    updatedSchedule.push({
+      month: getPaymentDate(startDate, i + 1),
+      capital: startingCapital.toFixed(2),
+      interest: interest.toFixed(2),
+      installment: (principal - overpayment).toFixed(2),
+      total: (interest + principal).toFixed(2),
+      overpayment: overpayment ? overpayment : undefined,
+    });
+  }
+  return updatedSchedule;
+}
+
+function recalculateDeclining_ShorterPeriod(
+  paymentSchedule: any[],
+  loanData: loanForm
+) {
+  const monthlyInterestRate = getMonthlyInterestRate(loanData.interestRate);
+  const monthlyPrincipal = loanData.loanAmount / loanData.loanTerm;
+  let remainingBalance = loanData.loanAmount;
+
+  const startDate = new Date();
+  const updatedSchedule = [];
+
+  let monthIndex = 0;
+
+  while (remainingBalance > 0) {
+    const overpayment = Number(paymentSchedule[monthIndex]?.overpayment) || 0;
+    const interest = remainingBalance * monthlyInterestRate;
+    let principal = monthlyPrincipal + overpayment;
+
+    if (principal > remainingBalance) {
+      principal = remainingBalance;
+    }
+
+    const totalPayment = principal + interest;
+
+    updatedSchedule.push({
+      month: getPaymentDate(startDate, monthIndex + 1),
+      capital: remainingBalance.toFixed(2),
+      interest: interest.toFixed(2),
+      installment: (principal - overpayment).toFixed(2),
+      total: totalPayment.toFixed(2),
+      overpayment: overpayment ? overpayment : undefined,
+    });
+
+    remainingBalance -= principal;
+    monthIndex++;
+  }
+
+  return updatedSchedule;
 }
 
 function recalculatedPaymentSchedule(

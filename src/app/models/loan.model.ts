@@ -4,6 +4,7 @@ export interface instalmentTypes {
 }
 
 export type instalmentType = 'Equal' | 'Declining';
+export type afterOverpaymentType = 'lowerInstallment' | 'shorterPeriod';
 
 export interface afterOverpayment {
   value: string;
@@ -15,7 +16,7 @@ export interface loanForm {
   loanAmount: number;
   loanTerm: number;
   interestRate: number;
-  afterOverpayment: string;
+  afterOverpayment: afterOverpaymentType;
 }
 
 export interface loanResult {
