@@ -1,0 +1,16 @@
+{
+  "hosting": {
+    "public": "dist/loan-optimizer",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  }
+}
