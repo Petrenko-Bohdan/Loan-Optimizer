@@ -18,7 +18,7 @@ export class AuthService {
     this.user$ = user(this.auth);
   }
 
-  singUp(email: string, password: string) {
+  signUp(email: string, password: string) {
     return from(createUserWithEmailAndPassword(this.auth, email, password));
   }
 
