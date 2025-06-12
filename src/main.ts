@@ -8,6 +8,7 @@ import { routes } from './app/app.routes';
 import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
 import { provideAnalytics, getAnalytics } from '@angular/fire/analytics';
 import { firebaseConfig } from './app/enviroment/firebase-config';
+import { provideAuth, getAuth } from '@angular/fire/auth';
 
 bootstrapApplication(AppComponent, {
   providers: [
@@ -15,6 +16,7 @@ bootstrapApplication(AppComponent, {
     provideAnimations(), 
 		provideRouter(routes),
 		provideFirebaseApp(() => initializeApp(firebaseConfig)),
-    provideAnalytics(() => getAnalytics())
+    provideAnalytics(() => getAnalytics()),
+		provideAuth(() => getAuth())
   ],
 });
