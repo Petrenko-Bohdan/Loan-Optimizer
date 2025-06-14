@@ -1,3 +1,5 @@
+@use "../variables.scss" as *;
+
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
   -webkit-appearance: none;
@@ -5,33 +7,36 @@ input[type="number"]::-webkit-outer-spin-button {
 }
 
 input[type="number"] {
-  -moz-appearance: textfield; 
+  -moz-appearance: textfield;
 }
 
 .loan-form {
   display: flex;
-  gap: 16px;  
-  margin: auto;
-  padding: 20px 20px 0;
+  gap: 16px;
+  margin: 0 auto;
+  padding: 0 20px;
   border-radius: 12px;
   background: #f9f9f9;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-	max-width: 80%;
-	
-	&-centered {
+  max-width: 80%;
+
+  &-centered {
     display: flex;
-  justify-content: center; 
-  align-items: center;     
-  height: 100vh;
+    justify-content: center;
+    align-items: center;
+    min-height: calc(100vh - ($main-padding * 2) - $header-height);
   }
 
-	&-top {
-		position: fixed;
-		top: 0;
-		left: 0;
-		right: 0;
-		z-index: 1000;
-	}
+  &-top {
+    position: relative;
+    top: auto;
+    left: auto;
+    right: auto;
+    z-index: auto;
+
+    justify-content: flex-start;
+    align-items: flex-start;
+  }
 
   mat-form-field {
     width: 100%;
