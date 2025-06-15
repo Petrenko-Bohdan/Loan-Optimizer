@@ -8,6 +8,11 @@ import { MatError, MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { NgIf } from '@angular/common';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon'
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { RegisterComponent } from '../register/register.component';
+
 
 @Component({
   selector: 'app-login',
@@ -21,6 +26,11 @@ import { NgIf } from '@angular/common';
     MatFormFieldModule,
     MatInputModule,
     NgIf,
+		MatButtonModule,
+		MatIconModule, 
+		MatDialogModule,
+		
+
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
@@ -31,7 +41,8 @@ export class LoginComponent {
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+		private dialog: MatDialog
   ) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -55,4 +66,14 @@ export class LoginComponent {
       });
     }
   }
+
+openRegisterDialog() {
+  this.dialog.closeAll(); // закрыть логин
+  this.dialog.open(RegisterComponent, {
+    width: '100%',
+    maxWidth: '420px',
+    panelClass: 'custom-dialog-container',
+  });
+}
+
 }
