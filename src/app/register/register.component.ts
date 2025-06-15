@@ -6,6 +6,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatError, MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { CommonModule } from '@angular/common';
+import { MatDialogModule } from '@angular/material/dialog';
+
 
 @Component({
   selector: 'app-register',
@@ -18,6 +20,7 @@ import { CommonModule } from '@angular/common';
     MatInputModule,
     CommonModule,
     MatError,
+		MatDialogModule,
   ],
   templateUrl: './register.component.html',
   styleUrl: './register.component.scss',
