@@ -1,0 +1,18 @@
+<mat-toolbar color="primary" class="app-header">
+  <span class="app-title">Loan Optimizer</span>
+  <span class="spacer"></span>
+
+  <button mat-button (click)="openLoginDialog()" aria-label="Zaloguj się">
+    <mat-icon>login</mat-icon>
+    <span>Zaloguj się</span>
+  </button>
+
+  <button mat-icon-button [matMenuTriggerFor]="langMenu" aria-label="Wybór języka">
+    <mat-icon>language</mat-icon>
+  </button>
+
+  <mat-menu #langMenu="matMenu">
+    <button mat-menu-item>English</button>
+    <button mat-menu-item>Polski</button>
+  </mat-menu>
+</mat-toolbar>
