@@ -1,25 +1,20 @@
 @use 'variables' as *;
 
-
 :host {
-	display: flex;
-	flex-direction: column;
-	height: 100vh;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100%;
 }
 
-header {
-	height: $header-height; 
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	padding: 0 16px;
-	background-color: #fff;
-	border-bottom: 0 2px rgba(0,0,0,0.05);
-	z-index: 1000;
+app-header {
+  display: block;
+  height: $header-height; 
+  flex-shrink: 0;
 }
 
 main {
-	flex: 1;
-	overflow-y: auto;
-	padding: $main-padding;
+  flex: 1 1 auto;
+  overflow-y: auto;
+  padding: $main-padding;
 }
